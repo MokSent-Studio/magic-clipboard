@@ -9,3 +9,9 @@ Copy text on to your clipboard. Run the script as follows: `uv run main.py --tas
 `--style` is optional. `/style_guide.txt` is the default style guide
 
 The ideal use cases for this script is to setup shortcut keys that call your preferred commands. This is ideal if you often ask LLMs to transform text a specific way.
+
+##Modes
+You can switch between two modes `--mode writing` and `--mode coding`
+
+`writing` is for transforming text like summarising text
+`coding` is working with pyton code
