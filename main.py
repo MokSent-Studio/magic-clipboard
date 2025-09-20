@@ -2,7 +2,9 @@ import pyperclip
 from google import genai
 from pydantic import BaseModel
 from plyer import notification
-import platform, subprocess
+import platform
+import subprocess
+import argparse
 
 
 class Magic_text(BaseModel):
@@ -11,15 +13,12 @@ class Magic_text(BaseModel):
 
 client = genai.Client()
 
-# 🔧 Change this to control how the model processes text
-SYSTEM_PROMPT = "Rewrite the text to be clearer and more concise."
 
-
-def process_text(text: str) -> str:
+def process_text(text: str, system_prompt: str) -> str:
     """Send clipboard text to LLM and return processed output."""
     response = client.models.generate_content(
         model="gemini-2.5-flash",
-        contents=f"{SYSTEM_PROMPT}\n\nText:\n{text}",
+        contents=f"{system_prompt}\n\nText:\n{text}",
         config={
             "response_mime_type": "application/json",
             "response_schema": list[Magic_text],
@@ -57,7 +56,7 @@ def notify_user():
         print(f"(No sound played: {e})")
 
 
-def main():
+def main(system_prompt: str):
     text = pyperclip.paste().strip()
     if not text:
         print("⚠️ Clipboard is empty. Copy text first.")
@@ -65,7 +64,7 @@ def main():
 
     print("Original:", text)
     try:
-        new_text = process_text(text)
+        new_text = process_text(text, system_prompt)
     except Exception as e:
         print("❌ Error calling LLM:", e)
         return
@@ -76,4 +75,13 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Magic Text Processor")
+    parser.add_argument(
+        "--task",
+        type=str,
+        required=True,
+        help="System prompt for processing text (e.g. 'Summarize in 3 bullet points.')"
+    )
+    args = parser.parse_args()
+
+    main(args.task)
