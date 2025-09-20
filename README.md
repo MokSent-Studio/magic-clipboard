@@ -4,7 +4,7 @@ It takes text in the clipboard as text then process it and puts the output in th
 After cloning the project.
 Run: `uv sync`
 
-Copy text on to your clipboard. Run the script as follows: `uv run main.py --task "how you want the text to be processed" --style "path to your .txt style guide"` 
+Copy text on to your clipboard. Run the script as follows: `uv run main.py --task "action to be done" --style "path to your .txt style guide"` 
 
 `--style` is optional. `/style_guide.txt` is the default style guide
 
