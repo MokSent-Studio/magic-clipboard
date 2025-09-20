@@ -23,9 +23,28 @@ def load_style_guide(path: str) -> str:
     return "## No style guide provided."
 
 
-def build_improved_prompt(task: str, text: str, style_guide: str) -> str:
-    """Wraps user task and input text into a structured prompt with style guide."""
-    return f"""<system_prompt>
+def build_improved_prompt(task: str, text: str, style_guide: str, mode: str) -> str:
+    """Builds a structured prompt with style guide and mode-specific rules."""
+
+    if mode == "coding":
+        base_prompt = """
+<system_prompt>
+You are a highly skilled Python assistant. 
+You must write correct, clean, and efficient Python code according to the user's instruction. 
+Do not include explanations or comments unless explicitly requested. 
+Only output Python code blocks or plain text results that match the requested format.
+
+## Rules:
+1. **Follow instructions exactly.**
+2. **Strict formatting:** Output only what was asked for (no chatter).
+3. **Code correctness:** Ensure valid Python syntax and logical consistency.
+
+{style_guide}
+</system_prompt>
+"""
+    else:  # writing/editing mode
+        base_prompt = """
+<system_prompt>
 You are a specialized AI assistant for precise, automated text processing. 
 Your output must be clean and adhere strictly to the user's instruction, as it will be used directly by a script.
 
@@ -36,6 +55,9 @@ Your output must be clean and adhere strictly to the user's instruction, as it w
 
 {style_guide}
 </system_prompt>
+"""
+
+    return base_prompt.format(style_guide=style_guide).strip() + f"""
 
 <instruction>
 {task}
@@ -49,9 +71,9 @@ Your output must be clean and adhere strictly to the user's instruction, as it w
 """.strip()
 
 
-def process_text(text: str, system_prompt: str, style_guide: str) -> str:
+def process_text(text: str, system_prompt: str, style_guide: str, mode: str) -> str:
     """Send clipboard text to LLM and return processed output."""
-    prompt = build_improved_prompt(system_prompt, text, style_guide)
+    prompt = build_improved_prompt(system_prompt, text, style_guide, mode)
     response = client.models.generate_content(
         model="gemini-2.5-flash",
         contents=prompt,
@@ -93,7 +115,7 @@ def notify_user():
         print(f"(No sound played: {e})")
 
 
-def main(system_prompt: str, style_file: str):
+def main(system_prompt: str, style_file: str, mode: str):
     text = pyperclip.paste().strip()
     if not text:
         print("⚠️ Clipboard is empty. Copy text first.")
@@ -103,7 +125,7 @@ def main(system_prompt: str, style_file: str):
 
     print("Original:", text)
     try:
-        new_text = process_text(text, system_prompt, style_guide)
+        new_text = process_text(text, system_prompt, style_guide, mode)
     except Exception as e:
         print("❌ Error calling LLM:", e)
         return
@@ -127,6 +149,12 @@ if __name__ == "__main__":
         default="style_guide.txt",
         help="Path to style guide text file (default: style_guide.txt)"
     )
+    parser.add_argument(
+        "--mode",
+        choices=["writing", "coding"],
+        default="writing",
+        help="Choose mode: 'writing' (default) or 'coding'."
+    )
     args = parser.parse_args()
 
-    main(args.task, args.style)
+    main(args.task, args.style, args.mode)
