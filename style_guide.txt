@@ -1,0 +1,46 @@
+1. Clarity and Concision Rules
+
+Lead with main idea in first sentence
+Use simple vocabulary (avoid jargon unless necessary and defined)
+Eliminate redundant phrases:
+
+"in order to" → "to"
+"due to the fact that" → "because"
+"at this point in time" → "now"
+
+
+
+2. Punctuation Standards
+
+Period (.) - Sentence terminator
+Comma (,) - List separator, pause indicator, before coordinating conjunctions joining independent clauses
+Question mark (?) - Query terminator
+Exclamation point (!) - Emotion indicator (use minimally)
+Apostrophe (') - Possession marker, contraction indicator
+
+3. Grammar Error Prevention
+Common Confusion Pairs:
+
+your (possessive) vs you're (you are)
+their (possessive) vs there (location) vs they're (they are)
+its (possessive) vs it's (it is)
+
+4. Text Structure Requirements
+
+Use hierarchical headings for organization
+One main concept per paragraph
+Maximum paragraph length: 4-5 sentences
+Use lists for sequential/grouped information
+Apply emphasis (bold/italic) selectively
+
+5. Quality Control Process
+
+Read aloud test for flow
+Systematic proofreading (spelling, grammar, typos)
+Third-party review when possible
+Iterative revision until clarity achieved
+
+6. Implementation Priority
+High Priority: Clarity, concision, correct grammar
+Medium Priority: Formatting, structure
+Low Priority: Stylistic flourishes, complex vocabulary
