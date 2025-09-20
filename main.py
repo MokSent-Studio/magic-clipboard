@@ -14,11 +14,35 @@ class Magic_text(BaseModel):
 client = genai.Client()
 
 
+def build_prompt(task: str, text: str) -> str:
+    """Wraps user task and input text into a more robust and flexible prompt."""
+    return f"""<system_prompt>
+You are a specialized AI assistant for precise, automated text processing. Your output must be clean and adhere strictly to the user's instruction, as it will be used directly by a script.
+
+## Rules:
+1.  **Execute the instruction:** Apply the user's instruction to the input text exactly as stated.
+2.  **No chatter:** Do not add any conversational text, preamble, or explanations.
+3.  **Strict formatting:** The output format must match what is requested in the instruction.
+</system_prompt>
+
+<instruction>
+{task}
+</instruction>
+
+<text>
+{text}
+</text>
+
+<output>
+"""
+
+
 def process_text(text: str, system_prompt: str) -> str:
     """Send clipboard text to LLM and return processed output."""
+    prompt = build_prompt(system_prompt, text)
     response = client.models.generate_content(
         model="gemini-2.5-flash",
-        contents=f"{system_prompt}\n\nText:\n{text}",
+        contents=prompt,
         config={
             "response_mime_type": "application/json",
             "response_schema": list[Magic_text],
@@ -80,7 +104,7 @@ if __name__ == "__main__":
         "--task",
         type=str,
         required=True,
-        help="System prompt for processing text (e.g. 'Summarize in 3 bullet points.')"
+        help="Instruction for processing text (e.g. 'Summarize in 3 bullet points.')"
     )
     args = parser.parse_args()
 
