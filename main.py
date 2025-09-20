@@ -6,6 +6,8 @@ import platform
 import subprocess
 import argparse
 from pathlib import Path
+import tkinter as tk
+from tkinter import simpledialog
 
 
 class Magic_text(BaseModel):
@@ -82,7 +84,6 @@ def process_text(text: str, system_prompt: str, style_guide: str, mode: str) -> 
             "response_schema": list[Magic_text],
         }
     )
-    print(response.parsed[0].output)
     return response.parsed[0].output
 
 
@@ -115,6 +116,15 @@ def notify_user():
         print(f"(No sound played: {e})")
 
 
+def get_task_via_popup() -> str:
+    """Open a small Tkinter popup to ask for task input."""
+    root = tk.Tk()
+    root.withdraw()  # hide the empty Tkinter main window
+    task = simpledialog.askstring("Magic Text", "Enter the task instruction:")
+    root.destroy()
+    return task
+
+
 def main(system_prompt: str, style_file: str, mode: str):
     text = pyperclip.paste().strip()
     if not text:
@@ -140,8 +150,8 @@ if __name__ == "__main__":
     parser.add_argument(
         "--task",
         type=str,
-        required=True,
-        help="Instruction for processing text (e.g. 'Summarize in 3 bullet points.')"
+        help="Instruction for processing text (e.g. 'Summarize in 3 bullet points.'). "
+             "If not provided, a popup window will appear."
     )
     parser.add_argument(
         "--style",
@@ -157,4 +167,10 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    main(args.task, args.style, args.mode)
+    # fallback to popup if no task provided
+    task = args.task if args.task else get_task_via_popup()
+
+    if not task:
+        print("❌ No task provided, exiting.")
+    else:
+        main(task, args.style, args.mode)
