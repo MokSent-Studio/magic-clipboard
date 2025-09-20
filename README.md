@@ -15,3 +15,6 @@ You can switch between two modes `--mode writing` and `--mode coding`
 
 `writing` is for transforming text like summarising text
 `coding` is working with pyton code
+
+## Task pop-up window
+If you exclude the  `--task` flag in the command, a pop-up window will appear to prompt you for the task you want done one the clipboard text.
